@@ -15,7 +15,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
 from utils import *
-import archs
+from mnist import archs
 import metrics
 
 
@@ -28,8 +28,8 @@ def parse_args():
                         choices=archs.__all__,
                         help='model architecture')
     parser.add_argument('--metric', default='adacos',
-                        choices=['softmax', 'adacos', 'arcface'])
-    parser.add_argument('--num-features', default=3, type=int,
+                        choices=['adacos', 'arcface', 'sphereface', 'cosface', 'softmax'])
+    parser.add_argument('--num-features', default=512, type=int,
                         help='dimention of embedded features')
     parser.add_argument('-b', '--batch-size', default=128, type=int,
                         metavar='N', help='mini-batch size (default: 128)')
@@ -177,6 +177,10 @@ def main():
         metric_fc = metrics.AdaCos(num_features=args.num_features, num_classes=10)
     elif args.metric == 'arcface':
         metric_fc = metrics.ArcFace(num_features=args.num_features, num_classes=10)
+    elif args.metric == 'sphereface':
+        metric_fc = metrics.SphereFace(num_features=args.num_features, num_classes=10)
+    elif args.metric == 'cosface':
+        metric_fc = metrics.CosFace(num_features=args.num_features, num_classes=10)
     else:
         metric_fc = nn.Linear(args.num_features, 10)
     metric_fc = metric_fc.cuda()
