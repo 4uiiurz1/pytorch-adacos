@@ -30,7 +30,7 @@ class AdaCos(nn.Module):
         output = logits * (1 - one_hot) + target_logits * one_hot
         # feature re-scale
         with torch.no_grad():
-            B_avg = torch.where(one_hot < 1, self.s * torch.exp(logits), torch.zeros_like(logits))
+            B_avg = torch.where(one_hot < 1, torch.exp(self.s * logits), torch.zeros_like(logits))
             B_avg = torch.sum(B_avg) / input.size(0)
             # print(B_avg)
             theta_med = torch.median(theta)

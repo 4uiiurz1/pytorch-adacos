@@ -1,5 +1,5 @@
-# PyTorch implementation of AdaCos
-This repository contains code for **AdaCos** based on [AdaCos: Adaptively Scaling Cosine Logits for Effectively Learning Deep Face Representations](https://arxiv.org/abs/1905.00292) implemented in PyTorch.
+# PyTorch implementation of AdaCos, ArcFace, CosFace, and SphereFace
+This repository contains code for **AdaCos**, **ArcFace**, **CosFace**, and **SphereFace**  based on [AdaCos: Adaptively Scaling Cosine Logits for Effectively Learning Deep Face Representations](https://arxiv.org/abs/1905.00292) implemented in PyTorch.
 
 ## TODO
 - [ ] Train on WebFace and test on LFW
