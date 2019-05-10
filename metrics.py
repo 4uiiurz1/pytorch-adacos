@@ -22,21 +22,17 @@ class AdaCos(nn.Module):
         W = F.normalize(self.W)
         # dot product
         logits = F.linear(x, W)
-        # add margin
+        # feature re-scale
         theta = torch.acos(torch.clamp(logits, -1.0 + 1e-7, 1.0 - 1e-7))
-        target_logits = torch.cos(theta + self.m)
         one_hot = torch.zeros_like(logits)
         one_hot.scatter_(1, label.view(-1, 1).long(), 1)
-        output = logits * (1 - one_hot) + target_logits * one_hot
-        # feature re-scale
         with torch.no_grad():
             B_avg = torch.where(one_hot < 1, torch.exp(self.s * logits), torch.zeros_like(logits))
             B_avg = torch.sum(B_avg) / input.size(0)
             # print(B_avg)
             theta_med = torch.median(theta)
             self.s = torch.log(B_avg) / torch.cos(torch.min(math.pi/4 * torch.ones_like(theta_med), theta_med))
-        # print(self.s)
-        output *= self.s
+        output = self.s * logits
 
         return output
 
