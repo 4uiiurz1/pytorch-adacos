@@ -15,7 +15,7 @@ class AdaCos(nn.Module):
         self.W = Parameter(torch.FloatTensor(num_classes, num_features))
         nn.init.xavier_uniform_(self.W)
 
-    def forward(self, input, label):
+    def forward(self, input, label=None):
         # normalize features
         x = F.normalize(input)
         # normalize weights
