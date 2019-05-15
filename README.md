@@ -2,7 +2,8 @@
 This repository contains code for **AdaCos**, **ArcFace**, **CosFace**, and **SphereFace**  based on [AdaCos: Adaptively Scaling Cosine Logits for Effectively Learning Deep Face Representations](https://arxiv.org/abs/1905.00292) implemented in PyTorch.
 
 ## TODO
-- [x] Train on Omniglot
+- [x] Omniglot
+- [ ] Results of Omniglot experiments
 - [ ] Train on WebFace and test on LFW
 
 

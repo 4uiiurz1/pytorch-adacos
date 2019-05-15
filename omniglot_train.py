@@ -160,17 +160,17 @@ def main():
         img_paths, labels, test_size=0.2, random_state=41, stratify=labels)
 
     transform_train = transforms.Compose([
-        transforms.Resize((114, 114), interpolation=2),
+        transforms.RandomResizedCrop(114),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5),
-                             (0.5, 0.5, 0.5))
+        transforms.Normalize([0.485, 0.456, 0.406],
+                             [0.229, 0.224, 0.225])
     ])
 
     transform_test = transforms.Compose([
-        transforms.Resize((114, 114), interpolation=2),
+        transforms.Resize(114),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5),
-                             (0.5, 0.5, 0.5))
+        transforms.Normalize([0.485, 0.456, 0.406],
+                             [0.229, 0.224, 0.225])
     ])
 
     train_set = dataset.Omniglot(

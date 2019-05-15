@@ -95,10 +95,7 @@ def validate(args, val_loader, model, metric_fc, criterion):
             target = target.long().cuda()
 
             feature = model(input)
-            if args.metric == 'softmax':
-                output = metric_fc(feature)
-            else:
-                output = metric_fc(feature, target)
+            output = metric_fc(feature)
             loss = criterion(output, target)
 
             acc1, = accuracy(output, target, topk=(1,))
