@@ -84,8 +84,8 @@ def train(args, train_loader, model, metric_fc, criterion, optimizer):
 
     log = OrderedDict([
         ('loss', losses.avg),
-        ('acc1', acc1s.avg),
-        ('acc5', acc5s.avg),
+        ('acc@1', acc1s.avg),
+        ('acc@5', acc5s.avg),
     ])
 
     return log
@@ -117,8 +117,8 @@ def validate(args, val_loader, model, metric_fc, criterion):
 
     log = OrderedDict([
         ('loss', losses.avg),
-        ('acc1', acc1s.avg),
-        ('acc5', acc5s.avg),
+        ('acc@1', acc1s.avg),
+        ('acc@5', acc5s.avg),
     ])
 
     return log
@@ -222,7 +222,7 @@ def main():
                                                T_max=args.epochs, eta_min=args.min_lr)
 
     log = pd.DataFrame(index=[], columns=[
-        'epoch', 'lr', 'loss', 'acc1', 'acc5', 'val_loss', 'val_acc1', 'val_acc5'
+        'epoch', 'lr', 'loss', 'acc@1', 'acc@5', 'val_loss', 'val_acc1', 'val_acc5'
     ])
 
     best_loss = float('inf')
@@ -237,19 +237,19 @@ def main():
         # evaluate on validation set
         val_log = validate(args, test_loader, model, metric_fc, criterion)
 
-        print('loss %.4f - acc1 %.4f - acc5 %.4f - val_loss %.4f - val_acc1 %.4f - val_acc5 %.4f'
-            %(train_log['loss'], train_log['acc1'], train_log['acc5'], val_log['loss'], val_log['acc1'], val_log['acc5']))
+        print('loss %.4f - acc@1 %.4f - acc@5 %.4f - val_loss %.4f - val_acc@1 %.4f - val_acc@5 %.4f'
+            %(train_log['loss'], train_log['acc@1'], train_log['acc@5'], val_log['loss'], val_log['acc@1'], val_log['acc@5']))
 
         tmp = pd.Series([
             epoch,
             scheduler.get_lr()[0],
             train_log['loss'],
-            train_log['acc1'],
-            train_log['acc5'],
+            train_log['acc@1'],
+            train_log['acc@5'],
             val_log['loss'],
-            val_log['acc1'],
-            val_log['acc5'],
-        ], index=['epoch', 'lr', 'loss', 'acc1', 'acc5', 'val_loss', 'val_acc1', 'val_acc5'])
+            val_log['acc@1'],
+            val_log['acc@5'],
+        ], index=['epoch', 'lr', 'loss', 'acc@1', 'acc@5', 'val_loss', 'val_acc1', 'val_acc5'])
 
         log = log.append(tmp, ignore_index=True)
         log.to_csv('models/%s/log.csv' % args.name, index=False)

@@ -3,7 +3,7 @@ This repository contains code for **AdaCos**, **ArcFace**, **CosFace**, and **Sp
 
 ## TODO
 - [x] Omniglot
-- [ ] Results of Omniglot experiments
+- [x] Results of Omniglot experiments
 - [ ] Train on WebFace and test on LFW
 
 
@@ -23,3 +23,12 @@ cd omniglot
 cd ..
 python omniglot_train.py --metric adacos
 ```
+
+## Results
+### Omniglot
+| Method                  |   acc@1   |   acc@5   |
+|:------------------------|:---------:|:---------:|
+| SphereFace              |   89.66   |   98.48   |
+| CosFace                 |   89.68   |   98.23   |
+| ArcFace                 |   89.54   |   98.48   |
+| AdaCos                  | **90.06** | **98.55** |
