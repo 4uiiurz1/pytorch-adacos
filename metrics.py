@@ -30,7 +30,7 @@ class AdaCos(nn.Module):
             B_avg = torch.where(one_hot < 1, torch.exp(self.s * logits), torch.zeros_like(logits))
             B_avg = torch.sum(B_avg) / input.size(0)
             # print(B_avg)
-            theta_med = torch.median(theta)
+            theta_med = torch.median(theta[one_hot == 1])
             self.s = torch.log(B_avg) / torch.cos(torch.min(math.pi/4 * torch.ones_like(theta_med), theta_med))
         output = self.s * logits
 
