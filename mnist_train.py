@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument('-b', '--batch-size', default=128, type=int,
                         metavar='N', help='mini-batch size (default: 128)')
     parser.add_argument('--epochs', default=100, type=int)
-    parser.add_argument('--lr', '--learning-rate', default=1e-1, type=float)
+    parser.add_argument('--lr', '--learning-rate', default=1e-2, type=float)
     parser.add_argument('--min-lr', default=1e-3, type=float)
     parser.add_argument('--momentum', default=0.5, type=float)
     parser.add_argument('--weight-decay', default=1e-4, type=float)
@@ -95,7 +95,10 @@ def validate(args, val_loader, model, metric_fc, criterion):
             target = target.long().cuda()
 
             feature = model(input)
-            output = metric_fc(feature)
+            if args.metric == 'softmax':
+                output = metric_fc(feature)
+            else:
+                output = metric_fc(feature, target)
             loss = criterion(output, target)
 
             acc1, = accuracy(output, target, topk=(1,))

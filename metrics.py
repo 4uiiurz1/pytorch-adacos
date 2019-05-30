@@ -22,6 +22,8 @@ class AdaCos(nn.Module):
         W = F.normalize(self.W)
         # dot product
         logits = F.linear(x, W)
+        if label is None:
+            return logits
         # feature re-scale
         theta = torch.acos(torch.clamp(logits, -1.0 + 1e-7, 1.0 - 1e-7))
         one_hot = torch.zeros_like(logits)
@@ -47,13 +49,15 @@ class ArcFace(nn.Module):
         self.W = Parameter(torch.FloatTensor(num_classes, num_features))
         nn.init.xavier_uniform_(self.W)
 
-    def forward(self, input, label):
+    def forward(self, input, label=None):
         # normalize features
         x = F.normalize(input)
         # normalize weights
         W = F.normalize(self.W)
         # dot product
         logits = F.linear(x, W)
+        if label is None:
+            return logits
         # add margin
         theta = torch.acos(torch.clamp(logits, -1.0 + 1e-7, 1.0 - 1e-7))
         target_logits = torch.cos(theta + self.m)
@@ -76,13 +80,15 @@ class SphereFace(nn.Module):
         self.W = Parameter(torch.FloatTensor(num_classes, num_features))
         nn.init.xavier_uniform_(self.W)
 
-    def forward(self, input, label):
+    def forward(self, input, label=None):
         # normalize features
         x = F.normalize(input)
         # normalize weights
         W = F.normalize(self.W)
         # dot product
         logits = F.linear(x, W)
+        if label is None:
+            return logits
         # add margin
         theta = torch.acos(torch.clamp(logits, -1.0 + 1e-7, 1.0 - 1e-7))
         target_logits = torch.cos(self.m * theta)
@@ -105,13 +111,15 @@ class CosFace(nn.Module):
         self.W = Parameter(torch.FloatTensor(num_classes, num_features))
         nn.init.xavier_uniform_(self.W)
 
-    def forward(self, input, label):
+    def forward(self, input, label=None):
         # normalize features
         x = F.normalize(input)
         # normalize weights
         W = F.normalize(self.W)
         # dot product
         logits = F.linear(x, W)
+        if label is None:
+            return logits
         # add margin
         target_logits = logits - self.m
         one_hot = torch.zeros_like(logits)
