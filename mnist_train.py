@@ -39,6 +39,7 @@ def parse_args():
     parser.add_argument('--momentum', default=0.5, type=float)
     parser.add_argument('--weight-decay', default=1e-4, type=float)
     parser.add_argument('--nesterov', default=False, type=str2bool)
+    parser.add_argument('--cpu', default=False, type=str2bool)
 
     args = parser.parse_args()
 
@@ -53,8 +54,12 @@ def train(args, train_loader, model, metric_fc, criterion, optimizer):
     metric_fc.train()
 
     for i, (input, target) in tqdm(enumerate(train_loader), total=len(train_loader)):
-        input = input.cuda()
-        target = target.long().cuda()
+        if args.cpu:
+            input = input.cpu()
+            target = target.long().cpu()
+        else:
+            input = input.cuda()
+            target = target.long().cuda() 
 
         feature = model(input)
         if args.metric == 'softmax':
@@ -91,8 +96,12 @@ def validate(args, val_loader, model, metric_fc, criterion):
 
     with torch.no_grad():
         for i, (input, target) in tqdm(enumerate(val_loader), total=len(val_loader)):
-            input = input.cuda()
-            target = target.long().cuda()
+            if args.cpu:
+                input = input.cpu()
+                target = target.long().cpu()
+            else:
+                input = input.cuda()
+                target = target.long().cuda()
 
             feature = model(input)
             if args.metric == 'softmax':
@@ -134,7 +143,12 @@ def main():
 
     joblib.dump(args, 'models/%s/args.pkl' %args.name)
 
-    criterion = nn.CrossEntropyLoss().cuda()
+    # criterion = nn.CrossEntropyLoss().cpu()
+
+    if args.cpu:
+        criterion = nn.CrossEntropyLoss().cpu()
+    else:
+        criterion = nn.CrossEntropyLoss().cuda()
 
     cudnn.benchmark = True
 
@@ -171,7 +185,11 @@ def main():
 
     # create model
     model = archs.__dict__[args.arch](args)
-    model = model.cuda()
+
+    if args.cpu:
+        model = model.cpu()
+    else:
+        model = model.cuda()
 
     if args.metric == 'adacos':
         metric_fc = metrics.AdaCos(num_features=args.num_features, num_classes=10)
@@ -183,7 +201,10 @@ def main():
         metric_fc = metrics.CosFace(num_features=args.num_features, num_classes=10)
     else:
         metric_fc = nn.Linear(args.num_features, 10)
-    metric_fc = metric_fc.cuda()
+    if args.cpu:
+        metric_fc = metric_fc.cpu()
+    else:
+        metric_fc = metric_fc.cuda()
 
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr,
             momentum=args.momentum, weight_decay=args.weight_decay)
